@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffd400" />
+    <meta
+      name="description"
+      content="Laat weten of je op 27 juni België - Nieuw-Zeeland komt kijken bij Stormvogels Haasrode."
+    />
+    <title>België - Nieuw-Zeeland | Stormvogels Haasrode</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stadium-lights" aria-hidden="true"></div>
+
+    <main class="page-shell">
+      <section id="rsvp-view" class="card">
+        <header class="hero">
+          <div class="club-mark" aria-label="Stormvogels Haasrode">
+            <svg viewBox="0 0 120 120" role="img" aria-hidden="true">
+              <path d="M60 4 108 25v35c0 29-20 47-48 56C32 107 12 89 12 60V25Z" />
+              <path class="bird" d="M29 65c18-5 26-20 29-36 7 13 18 22 34 26-10 4-19 4-28 1 1 10-3 21-14 31 2-12-1-20-8-25-4 3-8 4-13 3Z" />
+              <circle class="ball" cx="77" cy="78" r="12" />
+              <path class="ball-lines" d="m77 69 6 4-2 7h-8l-2-7Zm-11 6 7 5m8 0 7-5M77 90v-10" />
+            </svg>
+          </div>
+
+          <div>
+            <p class="eyebrow">K. Stormvogels Haasrode</p>
+            <h1>Vroege vogels,<br /><span>grote match.</span></h1>
+          </div>
+
+          <div class="match-strip">
+            <div class="team">
+              <span class="flag belgium" aria-hidden="true"></span>
+              <strong>België</strong>
+            </div>
+            <div class="match-meta">
+              <span>27 JUNI</span>
+              <b>VS</b>
+              <small>bij de Stormvogels</small>
+            </div>
+            <div class="team">
+              <span class="flag new-zealand" aria-hidden="true">✦</span>
+              <strong>Nieuw-Zeeland</strong>
+            </div>
+          </div>
+        </header>
+
+        <form id="rsvp-form" novalidate>
+          <div class="form-intro">
+            <span class="step-label">Jouw naam</span>
+            <label class="sr-only" for="name">Naam</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              maxlength="80"
+              placeholder="Voornaam en familienaam"
+              required
+            />
+          </div>
+
+          <fieldset class="question">
+            <legend>
+              <span class="question-number">1</span>
+              Kom jij op 27 juni uit je bed om naar de match België - Nieuw-Zeeland
+              bij de Stormvogels te komen kijken?
+            </legend>
+            <div class="choice-grid">
+              <label class="choice yes-choice">
+                <input type="radio" name="coming" value="Ja" required />
+                <span class="choice-icon">✓</span>
+                <span>
+                  <strong>Ja!</strong>
+                  <small>Ik ben erbij</small>
+                </span>
+              </label>
+              <label class="choice no-choice">
+                <input type="radio" name="coming" value="Nee" required />
+                <span class="choice-icon">×</span>
+                <span>
+                  <strong>Nee</strong>
+                  <small>Deze keer niet</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="party-question" class="question conditional" hidden>
+            <legend>
+              <span class="question-number">2</span>
+              Met hoeveel zijn jullie?
+            </legend>
+            <div class="number-grid">
+              <label class="choice number-choice">
+                <input type="radio" name="partySize" value="1" />
+                <span>1</span>
+              </label>
+              <label class="choice number-choice">
+                <input type="radio" name="partySize" value="2" />
+                <span>2</span>
+              </label>
+              <label class="choice number-choice">
+                <input type="radio" name="partySize" value="3" />
+                <span>3</span>
+              </label>
+              <label class="choice number-choice">
+                <input type="radio" name="partySize" value="4" />
+                <span>4</span>
+              </label>
+              <label class="choice number-choice">
+                <input type="radio" name="partySize" value="5" />
+                <span>5</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="breakfast-question" class="question conditional" hidden>
+            <legend>
+              <span class="question-number">3</span>
+              Wensen jullie graag koffiekoeken als ontbijt?
+            </legend>
+            <p class="question-note">Want supporteren gaat nét iets beter met een koffiekoek.</p>
+            <div class="choice-grid">
+              <label class="choice yes-choice">
+                <input type="radio" name="breakfast" value="Ja" />
+                <span class="choice-icon pastry">🥐</span>
+                <span>
+                  <strong>Ja, graag</strong>
+                  <small>Tel mij maar mee</small>
+                </span>
+              </label>
+              <label class="choice no-choice">
+                <input type="radio" name="breakfast" value="Nee" />
+                <span class="choice-icon">–</span>
+                <span>
+                  <strong>Nee, bedankt</strong>
+                  <small>Alleen de match</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+          <button id="submit-button" class="submit-button" type="submit">
+            <span>Antwoord versturen</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 14-8-5 16-3-6-6-2Z" />
+            </svg>
+          </button>
+        </form>
+      </section>
+
+      <section id="success-view" class="card success-card" hidden>
+        <div class="success-icon">✓</div>
+        <p class="eyebrow">Antwoord genoteerd</p>
+        <h2 id="success-title">Tot bij de Stormvogels!</h2>
+        <p id="success-message"></p>
+        <button id="edit-button" class="text-button" type="button">Mijn antwoord wijzigen</button>
+      </section>
+
+      <section id="admin-view" class="admin-card" hidden>
+        <header class="admin-header">
+          <div>
+            <p class="eyebrow">Stormvogels overzicht</p>
+            <h1>Wie zet de wekker?</h1>
+          </div>
+          <button id="refresh-button" class="icon-button" type="button" aria-label="Vernieuwen">↻</button>
+        </header>
+
+        <div id="admin-login" class="admin-login">
+          <label for="admin-pin">Beheercode</label>
+          <div class="pin-row">
+            <input id="admin-pin" type="password" autocomplete="current-password" placeholder="••••••••" />
+            <button id="admin-login-button" type="button">Open overzicht</button>
+          </div>
+          <p id="admin-error" class="form-error" hidden></p>
+        </div>
+
+        <div id="dashboard" hidden>
+          <div class="stats">
+            <article class="stat stat-total">
+              <span>Totaal</span>
+              <strong id="stat-total">0</strong>
+              <small>antwoorden</small>
+            </article>
+            <article class="stat stat-yes">
+              <span>Komen</span>
+              <strong id="stat-yes">0</strong>
+              <small>personen</small>
+            </article>
+            <article class="stat stat-no">
+              <span>Komen niet</span>
+              <strong id="stat-no">0</strong>
+              <small>personen</small>
+            </article>
+            <article class="stat stat-pastry">
+              <span>Koffiekoeken</span>
+              <strong id="stat-pastry">0</strong>
+              <small>gewenst</small>
+            </article>
+          </div>
+
+          <div class="table-toolbar">
+            <div class="filter-pills" aria-label="Antwoorden filteren">
+              <button class="filter active" type="button" data-filter="all">Iedereen</button>
+              <button class="filter" type="button" data-filter="yes">Komt</button>
+              <button class="filter" type="button" data-filter="no">Komt niet</button>
+            </div>
+            <button id="csv-button" class="download-button" type="button">Download CSV</button>
+          </div>
+
+          <div class="response-list" id="response-list"></div>
+          <p id="empty-state" class="empty-state" hidden>Nog geen antwoorden ontvangen.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>⚽</span> Koninklijke Stormvogels Haasrode · Stamnummer 3892
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
