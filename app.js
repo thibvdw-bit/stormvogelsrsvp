@@ -10,6 +10,7 @@
   const successView = document.querySelector("#success-view");
   const adminView = document.querySelector("#admin-view");
   const form = document.querySelector("#rsvp-form");
+  const partyQuestion = document.querySelector("#party-question");
   const breakfastQuestion = document.querySelector("#breakfast-question");
   const formError = document.querySelector("#form-error");
   const submitButton = document.querySelector("#submit-button");
@@ -74,10 +75,22 @@
     return result.responses || [];
   }
 
-  function setBreakfastVisibility(coming) {
+  function getPartySize(item) {
+    const size = Number.parseInt(item.partySize, 10);
+    if (item.coming !== "Ja") return 0;
+    return Number.isFinite(size) && size >= 1 ? size : 1;
+  }
+
+  function setAttendingQuestionsVisibility(coming) {
     const isComing = coming === "Ja";
+    partyQuestion.hidden = !isComing;
     breakfastQuestion.hidden = !isComing;
+    const partyInputs = partyQuestion.querySelectorAll('input[name="partySize"]');
     const breakfastInputs = breakfastQuestion.querySelectorAll('input[name="breakfast"]');
+    partyInputs.forEach((input) => {
+      input.required = isComing;
+      if (!isComing) input.checked = false;
+    });
     breakfastInputs.forEach((input) => {
       input.required = isComing;
       if (!isComing) input.checked = false;
@@ -86,10 +99,10 @@
 
   document.querySelectorAll('input[name="coming"]').forEach((input) => {
     input.addEventListener("change", () => {
-      setBreakfastVisibility(input.value);
+      setAttendingQuestionsVisibility(input.value);
       showError(formError, "");
       if (input.value === "Ja") {
-        window.setTimeout(() => breakfastQuestion.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
+        window.setTimeout(() => partyQuestion.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
       }
     });
   });
@@ -101,6 +114,7 @@
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
     const coming = String(data.get("coming") || "");
+    const partySize = coming === "Ja" ? String(data.get("partySize") || "") : "0";
     const breakfast = coming === "Ja" ? String(data.get("breakfast") || "") : "Niet van toepassing";
 
     if (!name) {
@@ -112,6 +126,10 @@
       showError(formError, "Kies of je erbij bent.");
       return;
     }
+    if (coming === "Ja" && !partySize) {
+      showError(formError, "Kies nog even met hoeveel jullie zijn.");
+      return;
+    }
     if (coming === "Ja" && !breakfast) {
       showError(formError, "Laat nog even weten of je koffiekoeken wenst.");
       return;
@@ -120,6 +138,7 @@
     const payload = {
       name,
       coming,
+      partySize,
       breakfast,
       deviceId: getDeviceId(),
       submittedAt: new Date().toISOString(),
@@ -133,11 +152,12 @@
       const successTitle = document.querySelector("#success-title");
       const successMessage = document.querySelector("#success-message");
       if (coming === "Ja") {
+        const peopleText = partySize === "1" ? "je bent" : `jullie zijn met ${partySize}`;
         successTitle.textContent = "Tot bij de Stormvogels!";
         successMessage.textContent =
           breakfast === "Ja"
-            ? "Top, je bent erbij en we voorzien een koffiekoek voor jou."
-            : "Top, je bent erbij. De koffiekoeken laten we voor jou achterwege.";
+            ? `Top, ${peopleText} erbij en we voorzien koffiekoeken.`
+            : `Top, ${peopleText} erbij. De koffiekoeken laten we voor jullie achterwege.`;
       } else {
         successTitle.textContent = "Jammer, volgende keer!";
         successMessage.textContent = "Je antwoord is goed ontvangen. We supporteren een beetje harder voor jou.";
@@ -186,11 +206,13 @@
     const yes = responses.filter((item) => item.coming === "Ja");
     const no = responses.filter((item) => item.coming === "Nee");
     const pastry = yes.filter((item) => item.breakfast === "Ja");
+    const yesPeople = yes.reduce((sum, item) => sum + getPartySize(item), 0);
+    const pastryPeople = pastry.reduce((sum, item) => sum + getPartySize(item), 0);
 
     document.querySelector("#stat-total").textContent = responses.length;
-    document.querySelector("#stat-yes").textContent = yes.length;
+    document.querySelector("#stat-yes").textContent = yesPeople;
     document.querySelector("#stat-no").textContent = no.length;
-    document.querySelector("#stat-pastry").textContent = pastry.length;
+    document.querySelector("#stat-pastry").textContent = pastryPeople;
 
     const filtered = responses.filter((item) => {
       if (activeFilter === "yes") return item.coming === "Ja";
@@ -203,17 +225,23 @@
     list.innerHTML = filtered
       .map((item) => {
         const isComing = item.coming === "Ja";
+        const partySize = getPartySize(item);
+        const peopleText = !isComing
+          ? "Komt niet"
+          : partySize === 1
+            ? "Komt alleen kijken"
+            : `Komt met ${partySize} personen kijken`;
         const breakfastText = !isComing
           ? "—"
           : item.breakfast === "Ja"
-            ? "🥐 Ja"
+            ? `🥐 ${partySize}`
             : "Geen";
         return `
           <article class="response ${isComing ? "yes" : "no"}">
             <span class="response-status">${isComing ? "✓" : "×"}</span>
             <span>
               <strong>${escapeHtml(item.name)}</strong>
-              <small>${isComing ? "Komt kijken" : "Komt niet"} · ${escapeHtml(formatDate(item.submittedAt))}</small>
+              <small>${escapeHtml(peopleText)} · ${escapeHtml(formatDate(item.submittedAt))}</small>
             </span>
             <span class="response-breakfast">${breakfastText}</span>
           </article>`;
@@ -262,8 +290,8 @@
 
   document.querySelector("#csv-button")?.addEventListener("click", () => {
     const rows = [
-      ["Naam", "Komt", "Koffiekoeken", "Ingediend op"],
-      ...responses.map((item) => [item.name, item.coming, item.breakfast, item.submittedAt]),
+      ["Naam", "Komt", "Aantal personen", "Koffiekoeken", "Ingediend op"],
+      ...responses.map((item) => [item.name, item.coming, getPartySize(item), item.breakfast, item.submittedAt]),
     ];
     const csv = rows
       .map((row) => row.map((cell) => `"${String(cell || "").replaceAll('"', '""')}"`).join(";"))
